@@ -9,6 +9,9 @@ class NetworksPage(Gtk.Box):
         self.app = app
         self._is_loading = False
         
+        # Добавляем общий CSS-класс
+        self.add_css_class("app-page")
+        
         # Контейнер для списка с отступами
         scroll = Gtk.ScrolledWindow()
         scroll.set_vexpand(True)

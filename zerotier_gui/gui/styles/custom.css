@@ -1,0 +1,234 @@
+/* Styles for menus */
+popover.menu {
+  padding: 8px;
+  margin-right: 40px;
+}
+
+popover.menu button {
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+popover.menu button:hover {
+  background-color: alpha(currentColor, 0.1);
+}
+
+/* Common styles for all application pages */
+.app-page {
+  margin: 24px;
+}
+
+/* Styles for lists */
+.network-list {
+  border-radius: 8px;
+  background-color: transparent;
+}
+
+/* Styles for rules source code display */
+.rules-source {
+  font-family: monospace;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.rules-scroll {
+  margin-top: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* Styles for messages */
+.message-dialog {
+  padding: 16px;
+}
+
+/* Global button styles for consistency */
+button {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+button.flat {
+  padding: 8px 12px;
+}
+
+/* Styles for header buttons */
+.header-actions button {
+  margin-left: 8px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+/* Styles for menu buttons */
+menubutton {
+  padding: 0;
+}
+
+menubutton button {
+  padding: 8px 12px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+/* Styles for join network page */
+.join-network-page {
+  /* max-width property not supported, using margin instead */
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.join-network-page label {
+  margin-bottom: 8px;
+}
+
+.join-network-page entry {
+  margin-bottom: 16px;
+  min-height: 36px;
+  padding: 0 8px;
+}
+
+.join-network-page button {
+  margin-right: 8px;
+  padding: 8px 16px;
+  min-width: 100px;
+}
+
+/* Styles for status messages */
+.error-message {
+  color: #cc0000;
+  font-weight: bold;
+}
+
+.success-message {
+  color: #00aa00;
+  font-weight: bold;
+}
+
+/* Network details page */
+.network-details-page {
+  /* overflow-y not supported, using min-height instead */
+  min-height: 100px;
+}
+
+.network-info {
+  /* text-align not supported, using xalign in code instead */
+  margin: 0;
+}
+
+.network-info-section {
+  margin-bottom: 12px;
+  /* text-align not supported, using xalign in code instead */
+  margin-left: 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  padding-bottom: 12px;
+}
+
+.network-info-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.network-info-section.no-bottom-border {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.network-info-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  /* text-align not supported, using xalign in code instead */
+  margin-left: 0;
+}
+
+.network-info-row {
+  /* display and grid-template-columns not supported, using box layout in code instead */
+  margin-bottom: 8px;
+  /* align-items not supported, using valign in code instead */
+}
+
+.network-info-label {
+  font-weight: bold;
+  /* text-align not supported, using xalign in code instead */
+}
+
+.network-info-value {
+  /* text-align not supported, using xalign in code instead */
+  padding-right: 0;
+}
+
+/* Styles for section separator */
+.section-separator {
+  margin: 0;
+  min-height: 1px;
+  background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Styles for members list */
+.members-list {
+  border-radius: 8px;
+  background-color: transparent;
+  /* max-height not supported, using min-height instead */
+  min-height: 100px;
+  /* overflow-y not supported */
+}
+
+.hidden-scrollbar scrollbar {
+  opacity: 0;
+  background-color: transparent;
+  border: none;
+}
+
+.hidden-scrollbar scrollbar slider {
+  background-color: transparent;
+  border: none;
+}
+
+/* Styles for header */
+.header {
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 8px;
+}
+
+.user-id-label {
+  margin-left: 8px;
+  opacity: 0.7;
+}
+
+/* Styles for network owner */
+.network-owner {
+  font-weight: bold;
+}
+
+.network-owner-icon {
+  margin-left: 8px;
+}
+
+/* Styles for user info page */
+.user-info-page separator {
+  background-color: rgba(0, 0, 0, 0.2);
+  min-height: 1px;
+}
+
+/* Icon-only buttons */
+button.icon-button {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px;
+}
+
+/* Action buttons */
+button.action-button {
+  min-width: 100px;
+  padding: 8px 16px;
+}

@@ -8,10 +8,9 @@ from gi.repository import Gtk, Gdk, GLib, Gio
 class AboutPage(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-        self.set_margin_start(32)
-        self.set_margin_end(32)
-        self.set_margin_top(32)
-        self.set_margin_bottom(32)
+        
+        # Добавляем общий CSS-класс
+        self.add_css_class("app-page")
         
         # Title
         title = Gtk.Label()
@@ -111,7 +110,7 @@ class AboutPage(Gtk.Box):
                     '-c',
                     f'DISPLAY={display} XDG_RUNTIME_DIR={xdg_runtime} DBUS_SESSION_BUS_ADDRESS={dbus_session} xdg-open {url}'
                 ]
-                
+
                 subprocess.Popen(cmd, stderr=subprocess.DEVNULL)
             except (KeyError, ValueError):
-                print(f"Could not find user for UID {real_uid}") 
+                pass

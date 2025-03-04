@@ -1,4 +1,4 @@
-from .utils import user_state
+from .utils import state, check_service, check_root
 from .api import (
     get_my_id,
     get_networks,
@@ -8,10 +8,13 @@ from .api import (
     delete_network,
     delete_network_member,
     ping_member,
+    join_network,
 )
 
 __all__ = [
-    'user_state',
+    'state',
+    'check_service',
+    'check_root',
     'get_my_id',
     'get_networks',
     'get_network_members',
@@ -20,4 +23,5 @@ __all__ = [
     'delete_network',
     'delete_network_member',
     'ping_member',
+    'join_network',
 ] 

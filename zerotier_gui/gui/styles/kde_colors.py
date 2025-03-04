@@ -5,6 +5,7 @@ import json
 from loguru import logger
 from gi.repository import Gtk, Gdk
 
+
 class KDEColorManager:
     # Default window size
     DEFAULT_WINDOW_WIDTH = 800
@@ -16,8 +17,13 @@ class KDEColorManager:
 
     def get_colors_from_dbus(self):
         try:
-            cmd = ["qdbus", "org.kde.plasmashell", "/PlasmaShell", "org.kde.PlasmaShell.evaluateScript",
-                  "var c = theme.colors; JSON.stringify({selection: c.selection})"]
+            cmd = [
+                "qdbus",
+                "org.kde.plasmashell",
+                "/PlasmaShell",
+                "org.kde.PlasmaShell.evaluateScript",
+                "var c = theme.colors; JSON.stringify({selection: c.selection})",
+            ]
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.returncode == 0 and result.stdout:
                 data = json.loads(result.stdout.strip())
@@ -30,11 +36,11 @@ class KDEColorManager:
     def get_colors(self):
         colors = {}
         kdeglobals = os.path.expanduser("~/.config/kdeglobals")
-        
+
         if os.path.exists(kdeglobals):
             config = configparser.ConfigParser()
             config.read(kdeglobals)
-            
+
             # Get accent color from Colors:Button section
             if "Colors:Button" in config:
                 accent = config["Colors:Button"].get("DecorationFocus", "")
@@ -46,7 +52,7 @@ class KDEColorManager:
             if "Colors:Window" in config:
                 bg = config["Colors:Window"].get("BackgroundNormal", "")
                 fg = config["Colors:Window"].get("ForegroundNormal", "")
-                
+
                 if bg:
                     r, g, b = map(int, bg.split(","))
                     colors["window_background"] = f"#{r:02x}{g:02x}{b:02x}"
@@ -58,20 +64,13 @@ class KDEColorManager:
             if "Colors:Button" in config:
                 bg = config["Colors:Button"].get("BackgroundNormal", "")
                 fg = config["Colors:Button"].get("ForegroundNormal", "")
-                
+
                 if bg:
                     r, g, b = map(int, bg.split(","))
                     colors["button_background"] = f"#{r:02x}{g:02x}{b:02x}"
                 if fg:
                     r, g, b = map(int, fg.split(","))
                     colors["button_foreground"] = f"#{r:02x}{g:02x}{b:02x}"
-
-            # Add debug output
-            print("Available sections:", config.sections())
-            for section in config.sections():
-                print(f"\nSection {section}:")
-                for key, value in config[section].items():
-                    print(f"  {key} = {value}")
 
         # Default colors if not found
         defaults = {
@@ -81,21 +80,16 @@ class KDEColorManager:
             "button_foreground": "#dfdfdf",
             "accent_color": "#b8544c",
         }
-        
+
         for key, value in defaults.items():
             if key not in colors:
                 colors[key] = value
 
-        # Debug output for final colors
-        print("\nFinal colors:")
-        for key, value in colors.items():
-            print(f"{key}: {value}")
-
         return colors
 
     def get_css(self):
-        accent_color = self.colors.get('accent_color', '#b8544c')
-        
+        accent_color = self.colors.get("accent_color", "#b8544c")
+
         return f"""
 window {{
     background-color: {self.colors['window_background']};
@@ -152,6 +146,7 @@ button.image-button {{
     margin: 0 4px;
     border-radius: 4px;
     min-height: 34px;
+    min-width: 34px;
     transition: all 200ms ease;
     box-shadow: none;
     -gtk-icon-shadow: none;
@@ -221,6 +216,17 @@ list {{
     margin-top: 2px;
 }}
 
+/* Стили для владельца сети */
+.network-owner {{
+    color: {accent_color};
+    font-weight: bold;
+}}
+
+.network-owner-icon {{
+    color: {accent_color};
+    margin-left: 8px;
+}}
+
 .members-box {{
     margin: 12px;
     padding: 12px;
@@ -266,13 +272,11 @@ list {{
         css = self.get_css()
         logger.debug(f"Applying CSS:\n{css}")
         css_provider.load_from_data(css.encode())
-        
+
         display = window.get_display()
         logger.debug(f"Display: {display}")
-        
+
         Gtk.StyleContext.add_provider_for_display(
-            display,
-            css_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            display, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        logger.debug("CSS provider added to display") 
+        logger.debug("CSS provider added to display")
