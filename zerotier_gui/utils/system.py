@@ -14,28 +14,24 @@ async def check_service():
     """
     try:
         if os.geteuid() != 0:
-            # Check if zerotier-one.service is running
+
             _, _, returncode = await run_command(
-                ["systemctl", "is-active", "zerotier-one.service"],
-                check=False
+                ["systemctl", "is-active", "zerotier-one.service"], check=False
             )
-            
+
             if returncode != 0:
-                # Try to start the service
+
                 await run_command(
-                    ["systemctl", "start", "zerotier-one.service"],
-                    check=False
+                    ["systemctl", "start", "zerotier-one.service"], check=False
                 )
-                
-                # Check if the service started
+
                 _, _, check_returncode = await run_command(
-                    ["systemctl", "is-active", "zerotier-one.service"],
-                    check=False
+                    ["systemctl", "is-active", "zerotier-one.service"], check=False
                 )
-                
+
                 if check_returncode != 0:
                     sys.exit(1)
-            
+
             return True
     except Exception:
         return False
@@ -48,16 +44,13 @@ def check_root():
     """
     if os.geteuid() != 0:
         try:
-            # Get the current user's UID
+
             real_uid = os.getuid()
 
-            # Get full path to current script
             script_path = os.path.abspath(sys.argv[0])
 
-            # Save necessary environment variables
             env = os.environ.copy()
 
-            # Try to restart application with root privileges via pkexec
             cmd = [
                 "pkexec",
                 "env",

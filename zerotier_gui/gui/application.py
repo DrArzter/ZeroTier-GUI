@@ -12,7 +12,6 @@ class Application(Gtk.Application):
         self.connect("activate", self.on_activate)
         self.window = None
         
-        # Создаем event loop в отдельном потоке
         self.loop = asyncio.new_event_loop()
         import threading
         self.thread = threading.Thread(target=self._run_event_loop, daemon=True)

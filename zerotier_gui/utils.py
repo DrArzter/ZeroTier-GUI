@@ -9,10 +9,8 @@ class UserState:
         self.state = self._load_state()
 
     def _load_state(self):
-        # Создаем директорию, если её нет
         self.config_dir.mkdir(parents=True, exist_ok=True)
         
-        # Пытаемся загрузить существующее состояние
         if self.config_file.exists():
             try:
                 with open(self.config_file, 'r') as f:
@@ -34,6 +32,7 @@ class UserState:
         self.state['my_id'] = value
         self._save_state()
 
+    @property
     def is_me(self, member_id):
         return self.my_id == member_id
 

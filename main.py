@@ -6,27 +6,28 @@ from zerotier_gui.utils import check_service, check_root
 from zerotier_gui.gui.application import Application
 from zerotier_gui import api
 
-# Configure logging
-logger.remove()  # Remove default handler
-logger.add(sys.stderr, level="ERROR")  # Add handler only for errors
+logger.remove()
+logger.add(sys.stderr, level="ERROR")
+
 
 async def initialize_app():
     """Initialize the application by loading necessary data."""
-    # Check permissions and service
-    check_root()
-    await check_service()
-    
-    # Initialize user data
+
+    # NOTE: I don't know if i still need this, gonna comment it out for now
+    # await check_root()
+    # await check_service()
+
     await api.initialize_user()
-    
-    # Create and run the application
+
     app = Application()
     return app.run()
 
+
 def main():
     """Entry point for the application."""
-    # Run asynchronous initialization
+
     return asyncio.run(initialize_app())
+
 
 if __name__ == "__main__":
     main()

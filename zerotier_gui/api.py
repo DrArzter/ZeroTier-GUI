@@ -7,7 +7,7 @@ from .utils import state, run_command, create_and_run_temp_script
 
 # Headers for API requests
 headers = {
-    "Authorization": f"Bearer {os.environ.get('ZEROTIER_API_TOKEN', 'Ikzh5eOZrZLFeyvgPQu1MEMpMudGLIUz')}"
+    "Authorization": f"Bearer {os.environ.get('ZEROTIER_API_TOKEN', 'YOUR_API_TOKEN')}"
 }
 
 @async_logging
@@ -225,22 +225,18 @@ fi
 @handle_exceptions
 async def is_member_of_network(network_id: str):
     """Check if the current device is a member of the specified network."""
-    # Check if the device ID is in state
     if not state.my_id:
         await get_my_id()
         if not state.my_id:
             return False
     
-    # Get the list of network members
     members = await get_network_members(network_id)
     
     if not members:
         return False
     
-    # Check if our device is in the list of members
     for member in members:
         if member.get("nodeId") == state.my_id:
-            # Check that the device is authorized
             return member.get("authorized", False)
     
     return False
@@ -250,11 +246,9 @@ async def is_member_of_network(network_id: str):
 @handle_exceptions
 async def get_current_user():
     """Get information about the current user via the ZeroTier API."""
-    # If user data is already saved in state, return it
     if state.user_id and state.user_data:
         return state.user_data
         
-    # Otherwise get data via API
     async with aiohttp.ClientSession() as session:
         async with session.get(
             "https://api.zerotier.com/api/v1/status", headers=headers
@@ -262,7 +256,6 @@ async def get_current_user():
             data = await response.json()
             
             if isinstance(data, dict) and "user" in data and isinstance(data["user"], dict):
-                # Save user data
                 state.user_data = data
                 state.user_id = data["user"]["id"]
                 
@@ -273,13 +266,10 @@ async def get_current_user():
 @handle_exceptions
 async def initialize_user():
     """Initialize user data when starting the application."""
-    # Get device ID
     await get_my_id()
     
-    # Get user data
     user_data = await get_current_user()
     
-    # Check that data was received successfully
     if not user_data or not isinstance(user_data, dict) or "user" not in user_data:
         return False
         
@@ -290,24 +280,19 @@ async def initialize_user():
 @handle_exceptions
 async def is_network_owner(network_id: str):
     """Check if the current user is the creator/owner of the specified network."""
-    # Check if the user ID is in state
     if not state.user_id:
-        # If not, get user data
         await get_current_user()
         if not state.user_id:
             return False
     
-    # Get information about the network
     network = await get_network_by_id(network_id)
     
     if not network or not isinstance(network, dict):
         return False
         
-    # Check if the user ID matches the network owner ID
     owner_id = network.get("ownerId")
     
     if not owner_id:
         return False
     
-    # Return the result of the comparison
     return owner_id == state.user_id
