@@ -6,7 +6,7 @@ The application is built using GTK 4 and Python 3, and is designed to be easy to
 
 ## Screenshots
 
-![Screenshot of the networks page](screenshots/networks-page.png)
+![Screenshot of the networks page](resources/images/networks-page.png)
 
 ## Features
 
