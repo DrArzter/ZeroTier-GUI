@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from './Icon';
+import appIcon from '../assets/app-icon.png';
 
 const navItems = [
   ['networks', 'grid', 'Networks'],
@@ -13,7 +14,7 @@ export function Layout({ route, navigate, localStatus, header, children }) {
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand" aria-label="ZeroTier GUI">
-        <div className="brand-mark">Z</div>
+        <img className="brand-mark" src={appIcon} alt=""/>
         <div className="brand-copy"><strong>ZeroTier</strong></div>
       </div>
       <nav className="nav" aria-label="Main navigation">

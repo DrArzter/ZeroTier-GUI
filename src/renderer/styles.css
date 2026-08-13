@@ -118,7 +118,7 @@ svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width:
 :root[data-platform="windows"] .app-shell { grid-template-columns: 224px minmax(0, 1fr); }
 .sidebar { display: flex; flex-direction: column; padding: 24px 16px 18px; background: var(--sidebar); border-right: 1px solid var(--border); }
 .brand { display: flex; gap: 11px; align-items: center; padding: 0 8px 30px; }
-.brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: white; font-weight: 760; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 68%, white), var(--accent)); box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 30%, transparent); }
+.brand-mark { display: block; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 11px; object-fit: cover; box-shadow: 0 8px 24px rgba(23, 23, 28, .32); }
 .brand-copy { display: flex; flex-direction: column; line-height: 1.25; }
 .brand-copy strong { font-size: 15px; letter-spacing: .01em; }
 .brand-copy span { color: var(--muted); font-size: 11px; }

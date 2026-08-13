@@ -1,5 +1,7 @@
 # ZeroTier GUI
 
+<p align="center"><img src="build/icon.png" width="128" alt="ZeroTier GUI icon"></p>
+
 A lightweight desktop client for managing Legacy ZeroTier Central networks and the local ZeroTier service.
 
 The current application is a complete Electron + React rewrite of the original Python/GTK client. It keeps privileged and network-facing operations in Electron's main process while the sandboxed renderer receives a small validated IPC API.
