@@ -179,6 +179,15 @@ h1 { margin: 0; font-size: 25px; line-height: 1.2; letter-spacing: -.025em; }
 .network-card h2 { margin: 0; font-size: 16px; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .network-id { margin-top: 5px; color: var(--muted); font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; user-select: text; }
 .network-card-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 25px; }
+.local-network-card { cursor: default; }
+.local-address-list { display: grid; gap: 6px; min-height: 36px; margin-top: 18px; }
+.local-address-list > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.local-address-list span { min-width: 0; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; font: 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; user-select: text; }
+.local-address-list button { padding: 4px 6px; border: 0; border-radius: 6px; background: var(--accent-soft); color: var(--accent-bright); font-size: 9px; font-weight: 700; cursor: pointer; }
+.local-card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.local-card-actions .button { min-height: 32px; padding: 0 10px; font-size: 10px; }
+.local-preferences-modal { gap: 12px; }
+.client-stats .stat-card:first-child strong { font-size: 15px; }
 .network-counts { display: flex; gap: 16px; }
 .network-counts div { display: flex; flex-direction: column; }
 .network-counts strong { font-size: 14px; }

@@ -38,6 +38,7 @@ export function App() {
   const [localStatus, setLocalStatus] = useState(null);
   const [localNetworks, setLocalNetworks] = useState([]);
   const [appearance, setAppearance] = useState(null);
+  const [centralConfigured, setCentralConfigured] = useState(false);
   const [modal, setModal] = useState(null);
   const [toasts, setToasts] = useState([]);
   const serviceWarningShown = useRef(false);
@@ -64,19 +65,25 @@ export function App() {
     return nextStatus;
   }, [notify]);
 
+  const refreshCentralStatus = useCallback(async () => {
+    const token = await bridge.settings.getTokenStatus();
+    setCentralConfigured(Boolean(token.configured));
+    return token;
+  }, []);
+
   useEffect(() => {
     document.documentElement.dataset.theme = 'system';
     localStorage.removeItem('theme');
     bridge.getAppearance().then((value) => { applyAppearance(value); setAppearance(value); });
     const unsubscribe = bridge.onAppearanceChanged((value) => { applyAppearance(value); setAppearance(value); });
-    Promise.all([refreshLocal(), bridge.settings.getTokenStatus()]).then(([, token]) => {
-      setRoute({ name: token.configured ? 'networks' : 'settings' });
+    Promise.all([refreshLocal(), refreshCentralStatus()]).then(([local, token]) => {
+      setRoute({ name: token.configured || local ? 'networks' : 'settings' });
     });
     return unsubscribe;
-  }, [refreshLocal]);
+  }, [refreshCentralStatus, refreshLocal]);
 
   const navigate = useCallback((name, networkId) => setRoute({ name, networkId }), []);
-  const context = useMemo(() => ({ bridge, navigate, notify, openModal: setModal, appearance, localStatus, localNetworks, refreshLocal, setHeader }), [navigate, notify, appearance, localStatus, localNetworks, refreshLocal]);
+  const context = useMemo(() => ({ bridge, navigate, notify, openModal: setModal, appearance, centralConfigured, refreshCentralStatus, localStatus, localNetworks, refreshLocal, setHeader }), [navigate, notify, appearance, centralConfigured, refreshCentralStatus, localStatus, localNetworks, refreshLocal]);
   let screen;
   if (route.name === 'networks') screen = <NetworksScreen {...context} />;
   if (route.name === 'details') screen = <DetailsScreen {...context} networkId={route.networkId} />;

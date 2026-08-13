@@ -12,10 +12,12 @@ The current application is a complete Electron + React rewrite of the original P
 ## Features
 
 - Create, edit, inspect, and delete Central networks
+- Run in client-only mode without a Central token
 - View, search, rename, authorize, ping, and remove network members
 - Display member connectivity, assigned IP addresses, last-seen time, and network ownership/access level
 - Copy member IP addresses directly from the member list or ping result
 - Join and leave networks on the local device
+- Ping arbitrary managed addresses and change local network preferences in client-only mode
 - Configure managed addresses, DNS, global routes, and default-route preferences per network
 - Detect stale local memberships for networks removed from Central and clean them up
 - Diagnose Linux access to the ZeroTier service and repair it without running the application as root
@@ -44,7 +46,7 @@ npm run check
 npm test
 ```
 
-After the first launch, open **Settings** and enter a Legacy Central API token. The token is validated before replacing the current credential.
+The application works immediately in client-only mode when the local ZeroTier service is available. Open **Settings** and enter a Legacy Central API token only if hosted network and member management is required. The token is validated before replacing the current credential.
 
 ## Installing a release
 
@@ -122,25 +124,16 @@ The renderer uses React without Redux or a component framework. Network members 
 ## Current limitations
 
 - Only Legacy Central personal tokens are supported.
+- Client-only mode cannot discover remote members because `zerotier-cli` exposes local memberships, not the Central member directory. Ping accepts a target managed IP address manually.
 - New Central v2 organizations, network groups, IAM, and service accounts are not implemented.
 - Linux automatic access repair assumes a systemd-based ZeroTier installation and the standard service-token path.
 - Windows packages are not code-signed.
 
 ## Releases
 
-CI runs the syntax checks, renderer build, and test suite for every branch and pull request. A tag matching the version in `package.json` triggers Linux and Windows packaging and publishes the resulting files to GitHub Releases.
+Pull requests targeting `main` run syntax checks, the renderer build, and the test suite. Packaging is intentionally not performed for branch pushes or pull requests.
 
-To publish version `0.3.0`:
-
-1. Set `version` to `0.3.0` in `package.json` and `package-lock.json` and commit the change.
-2. Create and push the matching tag:
-
-```bash
-git tag v0.3.0
-git push origin v0.3.0
-```
-
-The release workflow produces AppImage, Debian, Arch Linux, Windows installer, and Windows portable artifacts. Release publication uses the repository-provided `GITHUB_TOKEN`; no additional release token is required.
+After a pull request is merged, every relevant push to `main` builds AppImage, Debian, Arch Linux, Windows installer, and Windows portable artifacts. The workflow publishes them as an automated prerelease named `build-N`, following the same main-branch release model as Tendroid. Publication uses the repository-provided `GITHUB_TOKEN`; no additional release token is required.
 
 ## Contributing
 

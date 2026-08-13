@@ -18,8 +18,9 @@ export function Modal({ model, onClose, notify }) {
   const confirm = async () => {
     setPending(true);
     try {
-      await model.onConfirm?.();
+      const result = await model.onConfirm?.();
       setPending(false);
+      if (result?.close === false) return;
       onClose();
     }
     catch (error) { notify(errorMessage(error), 'error'); setPending(false); }

@@ -3,7 +3,7 @@ import { Button } from '../components/Button';
 import { ErrorState, Loading } from '../components/Feedback';
 import { errorMessage } from '../lib/errors';
 
-export function SettingsScreen({ bridge, notify, refreshLocal, appearance, setHeader }) {
+export function SettingsScreen({ bridge, notify, refreshLocal, refreshCentralStatus, appearance, setHeader }) {
   const [status, setStatus] = useState(null);
   const [accessStatus, setAccessStatus] = useState(null);
   const [error, setError] = useState(null);
@@ -23,11 +23,11 @@ export function SettingsScreen({ bridge, notify, refreshLocal, appearance, setHe
 
   const save = async () => {
     setSaving(true);
-    try { await bridge.settings.setToken({ token, persist }); setToken(''); notify('Token validated and saved.', 'success'); await load(); }
+    try { await bridge.settings.setToken({ token, persist }); setToken(''); await refreshCentralStatus(); notify('Central mode enabled. Token validated and saved.', 'success'); await load(); }
     catch (reason) { notify(errorMessage(reason), 'error'); }
     finally { setSaving(false); }
   };
-  const clear = async () => { await bridge.settings.clearToken(); notify('Token removed.', 'success'); await load(); };
+  const clear = async () => { await bridge.settings.clearToken(); await refreshCentralStatus(); notify('Token removed. Client-only mode is active.', 'success'); await load(); };
   const repairService = async () => {
     setRepairing(true);
     try {
@@ -47,7 +47,7 @@ export function SettingsScreen({ bridge, notify, refreshLocal, appearance, setHe
       <div className="security-note neutral appearance-summary"><span className="accent-swatch" style={{ background: appearance?.accentColor || 'var(--accent)' }}/><span>Detected: {appearance?.platformStyle || 'system'} · accent {appearance?.accentColor || 'automatic'} from {appearance?.accentSource || 'system'} · {appearance?.palette ? 'native KDE palette' : 'adaptive palette'}. System mode also follows contrast, motion, and transparency preferences.</span></div>
     </section>
     <section className="form-card">
-      <h2>ZeroTier Central token</h2><p>Status: {status.configured ? 'configured' : 'not configured'}. A new token is validated against the official API before it replaces the current one.</p>
+      <h2>ZeroTier Central · optional</h2><p>{status.configured ? 'Central mode is enabled. You can manage hosted networks and their members.' : 'Client-only mode is active. Local networks, join, leave, ping, and client preferences work without a token.'} A new token is validated before it replaces the current one.</p>
       <div className="field"><label htmlFor="token">API token</label><input id="token" className="input" type="password" value={token} onChange={(event) => setToken(event.target.value)} placeholder={status.configured ? 'Token is configured' : 'Paste a new ZeroTier API token'} autoComplete="off" spellCheck="false"/></div>
       <label className="checkbox"><input type="checkbox" checked={persist} disabled={!status.canPersist} onChange={(event) => setPersist(event.target.checked)}/>Keep the token securely between app launches</label>
       <div className="security-note">{status.canPersist ? `Encrypted storage backend: ${status.backend}.` : 'A secure OS keyring is unavailable. The token will remain in memory only.'}</div>
