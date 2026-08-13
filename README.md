@@ -1,44 +1,150 @@
 # ZeroTier GUI
 
-ZeroTier GUI is a simple graphical user interface for managing ZeroTier networks. It allows you to create and manage networks, add and remove members, and view network information.
+A lightweight desktop client for managing Legacy ZeroTier Central networks and the local ZeroTier service.
 
-The application is built using GTK 4 and Python 3, and is designed to be easy to use and understand. It is currently in development, and new features are being added regularly.
+The current application is a complete Electron + React rewrite of the original Python/GTK client. It keeps privileged and network-facing operations in Electron's main process while the sandboxed renderer receives a small validated IPC API.
 
-## Screenshots
-
-![Screenshot of the networks page](resources/images/networks-page.png)
+> [!NOTE]
+> ZeroTier GUI currently supports the Legacy Central v1 API and local `zerotier-cli`. The provider boundary is ready for a future Central v2 adapter, but v2 credentials and organizations are not implemented yet.
 
 ## Features
 
-- Create and manage ZeroTier networks
-- Add and remove members from networks
-- View network information, including the network ID, name, and description
-- View member information, including the member ID, name, and IP addresses
-- Use a simple and easy-to-use graphical interface
+- Create, edit, inspect, and delete Central networks
+- View, search, rename, authorize, ping, and remove network members
+- Display member connectivity, assigned IP addresses, last-seen time, and network ownership/access level
+- Copy member IP addresses directly from the member list or ping result
+- Join and leave networks on the local device
+- Configure managed addresses, DNS, global routes, and default-route preferences per network
+- Detect stale local memberships for networks removed from Central and clean them up
+- Diagnose Linux access to the ZeroTier service and repair it without running the application as root
+- Follow the operating-system light/dark mode, contrast, motion, transparency, palette, and accent preferences
+- Use the native KDE palette where available
 
-## Getting Started
+## Requirements
 
-You have to get your API token from ZeroTier website and set it in the 10th line of the code in api.py (gonna change it later for .env)
+- Node.js 22 or newer
+- A Legacy ZeroTier Central personal API token
+- ZeroTier One and `zerotier-cli` for local device management
+- Linux access repair additionally requires `pkexec`, `setfacl`, and `systemctl`
 
-To get started with ZeroTier GUI, you'll need to have ZeroTier installed and running on your system. You can then run ZeroTier GUI from the command line using the following command:
+## Running from source
 
 ```bash
-python main.py
+npm install
+npm start
 ```
+
+Useful development commands:
+
+```bash
+npm run build
+npm run check
+npm test
+```
+
+After the first launch, open **Settings** and enter a Legacy Central API token. The token is validated before replacing the current credential.
+
+## Installing a release
+
+Release files are published on the repository's **Releases** page.
+
+### Arch Linux
+
+Download the `.pacman` package and install it with:
+
+```bash
+sudo pacman -U ./ZeroTier-GUI-*.pacman
+```
+
+Alternatively, download the AppImage, make it executable, and run it without installing:
+
+```bash
+chmod +x ./ZeroTier-GUI-*.AppImage
+./ZeroTier-GUI-*.AppImage
+```
+
+### Debian and Ubuntu
+
+```bash
+sudo apt install ./ZeroTier-GUI-*.deb
+```
+
+### Windows
+
+Download the NSIS installer `.exe` for a normal installation, or the file containing `portable` when installation is not desired. Current builds are not code-signed, so Windows SmartScreen may display an unknown-publisher warning.
+
+## Credential storage
+
+Persistent storage is available only when Electron can use a secure operating-system encryption backend. Otherwise, the token remains in memory for the current process and is discarded when the application exits.
+
+Tokens are never exposed to the renderer. Central requests are made in the main process through the selected Central provider.
+
+## Local ZeroTier access on Linux
+
+The graphical application should not run as root. ZeroTier normally restricts `/var/lib/zerotier-one/authtoken.secret`, which can prevent an ordinary desktop user from calling `zerotier-cli`.
+
+The **Fix local access** action in Settings opens a system authorization prompt and performs two fixed operations when required:
+
+1. Grants the signed-in user read access to the local ZeroTier service token using a per-user ACL.
+2. Starts `zerotier-one.service` if it is not running.
+
+No renderer-provided command, executable, username, or file path is passed to a shell. Access to the service token allows control of the local ZeroTier node, so it should be granted only to trusted desktop users.
+
+## Architecture
+
+```text
+React renderer
+    │  window.zerotier.central / window.zerotier.local
+    ▼
+Sandboxed preload bridge
+    │  validated IPC messages
+    ▼
+Electron main process
+    ├── ProviderStrategy
+    │   ├── CentralV1Adapter ── Legacy Central API v1
+    │   └── LocalCliAdapter ─── zerotier-cli
+    ├── SecretStore
+    └── SystemAppearance
+```
+
+The renderer depends only on the stable `central` and `local` contracts. `ProviderStrategy` currently selects `legacy-v1` and `zerotier-cli`. A future `CentralV2Adapter` can implement the same Central contract without changing application screens.
+
+The renderer uses React without Redux or a component framework. Network members are requested only when a network details screen is opened, and there is no continuous polling loop.
+
+## Platform appearance
+
+- KDE Plasma: reads KDE colors and accent configuration and watches for changes.
+- Windows and macOS: uses Electron native theme and system preference events.
+- Other Linux desktops: uses Electron and XDG Desktop Portal appearance values where available.
+
+## Current limitations
+
+- Only Legacy Central personal tokens are supported.
+- New Central v2 organizations, network groups, IAM, and service accounts are not implemented.
+- Linux automatic access repair assumes a systemd-based ZeroTier installation and the standard service-token path.
+- Windows packages are not code-signed.
+
+## Releases
+
+CI runs the syntax checks, renderer build, and test suite for every branch and pull request. A tag matching the version in `package.json` triggers Linux and Windows packaging and publishes the resulting files to GitHub Releases.
+
+To publish version `0.3.0`:
+
+1. Set `version` to `0.3.0` in `package.json` and `package-lock.json` and commit the change.
+2. Create and push the matching tag:
+
+```bash
+git tag v0.3.0
+git push origin v0.3.0
+```
+
+The release workflow produces AppImage, Debian, Arch Linux, Windows installer, and Windows portable artifacts. Release publication uses the repository-provided `GITHUB_TOKEN`; no additional release token is required.
 
 ## Contributing
 
-Would be wery grateful to anyone who wants to contribute or report a bug/give a piecie of good advice how to make the app better.
-Would be even more grateful if you could add some code and make the app have more sense/functionality/looks.
+Bug reports, UI feedback, and focused pull requests are welcome. Before submitting changes, run:
 
-## F.A.Q.
-
-- Why the hell are you trying to ask for root?
-  - Do not remember the reason for this. Probably obsolete, gonna remove it.
-- How do I create a network?
-  - You can create a network by clicking the "Create Network" button on the "Networks" page.
-
-## P.S
-
-Probably will rewrite this later (with Electron) since now it's an overcomplexed messy mess, it does this and that, but i am not satisfied with it.
-ZeroTier API and ZeroTier itself are dumb in my opinion.
+```bash
+npm run check
+npm test
+```
