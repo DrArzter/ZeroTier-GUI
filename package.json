@@ -1,0 +1,90 @@
+{
+  "name": "zerotier-gui",
+  "version": "0.2.0",
+  "description": "A focused desktop client for ZeroTier Central and zerotier-cli",
+  "author": {
+    "name": "DrArzter",
+    "email": "DrArzter@users.noreply.github.com"
+  },
+  "desktopName": "zerotier-gui.desktop",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DrArzter/ZeroTier-GUI.git"
+  },
+  "main": "src/main/index.js",
+  "type": "commonjs",
+  "private": true,
+  "scripts": {
+    "start": "npm run build && electron .",
+    "build": "vite build",
+    "dist:linux": "npm run build && electron-builder --linux AppImage deb pacman --publish never",
+    "dist:win": "npm run build && electron-builder --win nsis portable --publish never",
+    "check": "node --check src/main/index.js && node --check src/main/ipc.js && node --check src/main/services/secret-store.js && node --check src/main/services/system-appearance.js && node --check src/main/services/zerotier-api.js && node --check src/main/services/zerotier-cli.js && node --check src/preload/index.js && vite build",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "latest",
+    "electron": "43.4.0",
+    "electron-builder": "^26.15.3",
+    "vite": "latest"
+  },
+  "dependencies": {
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "build": {
+    "appId": "io.github.drarzter.zerotiergui",
+    "productName": "ZeroTier GUI",
+    "artifactName": "ZeroTier-GUI-${version}-${os}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "src/main/**/*",
+      "src/preload/**/*",
+      "src/shared/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "icon": "build/icon.png",
+      "syncDesktopName": true,
+      "target": [
+        "AppImage",
+        "deb",
+        "pacman"
+      ],
+      "category": "Network",
+      "executableName": "zerotier-gui",
+      "synopsis": "Desktop client for ZeroTier Central and the local ZeroTier service",
+      "desktop": {
+        "entry": {
+          "Name": "ZeroTier GUI",
+          "Comment": "Manage ZeroTier networks and the local ZeroTier service",
+          "Categories": "Network;Utility;",
+          "Terminal": false
+        }
+      }
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "executableName": "ZeroTier GUI"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "DrArzter",
+      "repo": "ZeroTier-GUI"
+    }
+  }
+}

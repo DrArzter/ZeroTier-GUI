@@ -1,2 +1,13 @@
-__pycache__
-.venv
+node_modules/
+dist/
+out/
+release/
+*.log
+.env
+.env.*
+!.env.example
+
+# Python leftovers
+__pycache__/
+*.py[cod]
+.venv/
